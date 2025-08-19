@@ -12,7 +12,7 @@
     "preferences-branch": "skipredirect",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sblask/webextension-skip-redirect"
+        "url": "https://github.com/sblask-webextensions/webextension-skip-redirect"
     },
     "scripts": {
         "artifact-create:chrome": "web-ext build --artifacts-dir . --ignore-files bin screenshots package.json icon.fodg *.dat",
