@@ -2,7 +2,7 @@
 const psl = (function(root) { //  eslint-disable-line no-unused-vars
 
     if (typeof pslrules === "undefined") {
-        pslrules = require("./pslrules"); //  eslint-disable-line no-global-assign,no-unused-vars
+        pslrules = require("./pslrules"); //  eslint-disable-line no-global-assign
     }
 
     function getDomain(hostname, previousHead=undefined) {
