@@ -1,10 +1,4 @@
 {
-    "applications": {
-        "gecko": {
-            "id": "skipredirect@sblask",
-            "strict_min_version": "57.0"
-        }
-    },
     "author": "Sebastian Blask",
     "background": {
         "scripts": [
@@ -23,6 +17,12 @@
         "default_popup": "options/options.html",
         "default_title": "__MSG_browserActionLabelDefault__"
     },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "skipredirect@sblask"
+        }
+    },
+    "default_locale": "en",
     "description": "__MSG_extensionDescription__",
     "homepage_url": "https://github.com/sblask/webextension-skip-redirect",
     "icons": {
@@ -46,6 +46,5 @@
         "webRequest",
         "webRequestBlocking"
     ],
-    "default_locale": "en",
-    "version": "2.3.6"
+    "version": "x.x.x"
 }
