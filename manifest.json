@@ -6,8 +6,7 @@
         ],
         "type": "module"
     },
-    "browser_action": {
-        "browser_style": false,
+    "action": {
         "default_icon": "icon.svg",
         "default_popup": "options/options.html",
         "default_title": "__MSG_browserActionLabelDefault__"
@@ -19,7 +18,11 @@
                     "none"
                 ]
             },
-            "id": "skipredirect@sblask"
+            "id": "skipredirect@sblask",
+            "strict_min_version": "140.0"
+        },
+        "gecko_android": {
+            "strict_min_version": "142.0"
         }
     },
     "default_locale": "en",
@@ -28,13 +31,16 @@
     "icons": {
         "48": "icon.svg"
     },
-    "manifest_version": 2,
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "manifest_version": 3,
     "name": "__MSG_extensionName__",
     "options_ui": {
         "page": "options/options.html"
     },
     "permissions": [
-        "<all_urls>",
+        "alarms",
         "clipboardWrite",
         "contextMenus",
         "notifications",

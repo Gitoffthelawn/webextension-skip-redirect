@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Atlanan URL'ler listesi (her satırın bu <a href=\"https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns\">kalıbı</a> takip etmesi gerekir)"
+        "message": "Atlanan URL'ler listesi (düzenli ifadeler kullanabilirsiniz)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

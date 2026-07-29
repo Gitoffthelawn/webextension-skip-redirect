@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Danh sách trắng (mỗi dòng cần tuân theo điều này <a href=\"https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns\">pattern</a>)"
+        "message": "Danh sách trắng (you may use regular expressions)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

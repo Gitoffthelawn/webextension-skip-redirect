@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Vitlista (varje rad måste följa detta <a href=\"https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns\">pattern</a>)"
+        "message": "Vitlista (du kan använda reguljära uttryck)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

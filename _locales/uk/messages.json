@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Білий список (кожен рядок має відповідати цьому <a href=\"https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns\">шаблону</a>)"
+        "message": "Білий список (підтримує регулярні вирази)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Liste d’inclusion (<a href=\"https://developer.mozilla.org/Add-ons/WebExtensions/Match_patterns\">modèle</a> à suivre pour chaque entrée)"
+        "message": "Liste d’inclusion (expressions rationnelles acceptées)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

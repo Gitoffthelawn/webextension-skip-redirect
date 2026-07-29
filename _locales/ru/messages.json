@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Пропускаемые URL (строки должны соответствовать <a href=\"https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns\">шаблону</a>)"
+        "message": "Пропускаемые URL (поддерживает регулярные выражения)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",

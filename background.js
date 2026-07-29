@@ -18,6 +18,8 @@ const OPTION_NOTIFICATION_DURATION = "notificationDuration";
 
 const OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
 
+const VARIABLE_LAST_SOURCE_URL = "lastSourceURL";
+
 const LIST_OPTIONS = [
     OPTION_NO_SKIP_PARAMETERS_LIST,
     OPTION_NO_SKIP_URLS_LIST,
@@ -28,6 +30,7 @@ const TOOLBAR_CONTEXT_MENU_ID = "copy-last-source-url";
 const LINK_CONTEXT_MENU_ID = "copy-target-url";
 
 const NOTIFICATION_ID = "notify-skip";
+const NOTIFICATION_ALARM_NAME = "clear-notification";
 
 const ICON = "icon.svg";
 const ICON_OFF = "icon-off.svg";
@@ -80,8 +83,7 @@ let currentMode = undefined;
 let noSkipParametersList = [];
 let noSkipUrlsList = [];
 let skipUrlsList = [];
-
-let lastSourceURL = undefined;
+let skipUrlsExpression = undefined;
 
 let notificationPopupEnabled = undefined;
 let notificationDuration = undefined;
@@ -89,81 +91,91 @@ let notificationDuration = undefined;
 let skipRedirectsToSameDomain = false;
 let syncLists = false;
 
-let notificationTimeout = undefined;
+const initializationPromise = initializeState()
+    .catch((error) => {
+        console.warn(`Could not initialize extension state: ${error.message}`);
+    });
 
-browser.storage.local.get([
-    OPTION_MODE,
-    OPTION_NOTIFICATION_DURATION,
-    OPTION_NOTIFICATION_POPUP_ENABLED,
-    OPTION_NO_SKIP_PARAMETERS_LIST,
-    OPTION_NO_SKIP_URLS_LIST,
-    OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN,
-    OPTION_SKIP_URLS_LIST,
-    OPTION_SYNC_LISTS_ENABLED,
-])
-    .then(
-        (result) => {
+browser.webRequest.onBeforeRequest.addListener(
+    maybeRedirect,
+    {
+        urls: ["<all_urls>"],
+        types: ["main_frame"],
+    },
+    ["blocking"]
+);
 
-            if (result[OPTION_NO_SKIP_PARAMETERS_LIST] === undefined) {
-                browser.storage.local.set({[OPTION_NO_SKIP_PARAMETERS_LIST]: DEFAULT_NO_SKIP_PARAMETERS_LIST});
-            } else {
-                updateNoSkipParametersList(result[OPTION_NO_SKIP_PARAMETERS_LIST]);
-            }
+async function initializeState() {
+    const result = await browser.storage.local.get([
+        OPTION_MODE,
+        OPTION_NOTIFICATION_DURATION,
+        OPTION_NOTIFICATION_POPUP_ENABLED,
+        OPTION_NO_SKIP_PARAMETERS_LIST,
+        OPTION_NO_SKIP_URLS_LIST,
+        OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN,
+        OPTION_SKIP_URLS_LIST,
+        OPTION_SYNC_LISTS_ENABLED,
+    ]);
 
-            if (result[OPTION_NO_SKIP_URLS_LIST] === undefined) {
-                browser.storage.local.set({[OPTION_NO_SKIP_URLS_LIST]: DEFAULT_NO_SKIP_URLS_LIST});
-            } else {
-                updateNoSkipUrlsList(result[OPTION_NO_SKIP_URLS_LIST]);
-            }
+    if (result[OPTION_NO_SKIP_PARAMETERS_LIST] === undefined) {
+        browser.storage.local.set({[OPTION_NO_SKIP_PARAMETERS_LIST]: DEFAULT_NO_SKIP_PARAMETERS_LIST});
+    } else {
+        updateNoSkipParametersList(result[OPTION_NO_SKIP_PARAMETERS_LIST]);
+    }
 
-            if (result[OPTION_SKIP_URLS_LIST] === undefined) {
-                browser.storage.local.set({[OPTION_SKIP_URLS_LIST]: []});
-            } else {
-                updateSkipUrlsList(result[OPTION_SKIP_URLS_LIST]);
-            }
+    if (result[OPTION_NO_SKIP_URLS_LIST] === undefined) {
+        browser.storage.local.set({[OPTION_NO_SKIP_URLS_LIST]: DEFAULT_NO_SKIP_URLS_LIST});
+    } else {
+        updateNoSkipUrlsList(result[OPTION_NO_SKIP_URLS_LIST]);
+    }
 
-            if (result[OPTION_MODE] === undefined) {
-                browser.storage.local.set({[OPTION_MODE]: OPTION_MODE_NO_SKIP_URLS_LIST});
-                currentMode = OPTION_MODE_NO_SKIP_URLS_LIST;
-            } else {
-                currentMode = result[OPTION_MODE];
-            }
+    if (result[OPTION_SKIP_URLS_LIST] === undefined) {
+        browser.storage.local.set({[OPTION_SKIP_URLS_LIST]: []});
+    } else {
+        updateSkipUrlsList(result[OPTION_SKIP_URLS_LIST]);
+    }
 
-            if (currentMode === OPTION_MODE_OFF) {
-                disableSkipping();
-            } else {
-                enableSkipping();
-            }
+    if (result[OPTION_MODE] === undefined) {
+        browser.storage.local.set({[OPTION_MODE]: OPTION_MODE_NO_SKIP_URLS_LIST});
+        currentMode = OPTION_MODE_NO_SKIP_URLS_LIST;
+    } else {
+        currentMode = result[OPTION_MODE];
+    }
 
-            if (result[OPTION_NOTIFICATION_POPUP_ENABLED] === undefined) {
-                browser.storage.local.set({[OPTION_NOTIFICATION_POPUP_ENABLED]: true});
-            } else {
-                notificationPopupEnabled = result[OPTION_NOTIFICATION_POPUP_ENABLED];
-            }
+    updateBrowserAction();
 
-            if (result[OPTION_NOTIFICATION_DURATION] === undefined) {
-                browser.storage.local.set({[OPTION_NOTIFICATION_DURATION]: 3});
-            } else {
-                notificationDuration = result[OPTION_NOTIFICATION_DURATION];
-            }
+    if (result[OPTION_NOTIFICATION_POPUP_ENABLED] === undefined) {
+        browser.storage.local.set({[OPTION_NOTIFICATION_POPUP_ENABLED]: true});
+    } else {
+        notificationPopupEnabled = result[OPTION_NOTIFICATION_POPUP_ENABLED];
+    }
 
-            if (result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN] === undefined) {
-                browser.storage.local.set({[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]: false});
-            } else {
-                skipRedirectsToSameDomain = result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN];
-            }
+    if (result[OPTION_NOTIFICATION_DURATION] === undefined) {
+        browser.storage.local.set({[OPTION_NOTIFICATION_DURATION]: 3});
+    } else {
+        notificationDuration = result[OPTION_NOTIFICATION_DURATION];
+    }
 
-            if (result[OPTION_SYNC_LISTS_ENABLED] === undefined) {
-                browser.storage.local.set({[OPTION_SYNC_LISTS_ENABLED]: false});
-            } else {
-                syncLists = result[OPTION_SYNC_LISTS_ENABLED];
-            }
+    if (result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN] === undefined) {
+        browser.storage.local.set({[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]: false});
+    } else {
+        skipRedirectsToSameDomain = result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN];
+    }
 
-        }
-    );
+    if (result[OPTION_SYNC_LISTS_ENABLED] === undefined) {
+        browser.storage.local.set({[OPTION_SYNC_LISTS_ENABLED]: false});
+    } else {
+        syncLists = result[OPTION_SYNC_LISTS_ENABLED];
+    }
+
+}
 
 browser.storage.onChanged.addListener(
     (changes, areaName) => {
+        // options are stored in local area whereas variables are in session area
+        if (areaName === "session") {
+            return;
+        }
 
         let initTriggered = false;
         if (changes[OPTION_SYNC_LISTS_ENABLED]) {
@@ -199,12 +211,7 @@ browser.storage.onChanged.addListener(
 
         if (changes[OPTION_MODE]) {
             currentMode = changes[OPTION_MODE].newValue;
-        }
-
-        if (currentMode === OPTION_MODE_OFF) {
-            disableSkipping();
-        } else {
-            enableSkipping();
+            updateBrowserAction();
         }
 
         if (changes[OPTION_NOTIFICATION_POPUP_ENABLED]) {
@@ -222,50 +229,52 @@ browser.storage.onChanged.addListener(
     }
 );
 
-browser.contextMenus?.create({
-    id: TOOLBAR_CONTEXT_MENU_ID,
-    title: browser.i18n.getMessage("contextMenuToolbarLabel"),
-    contexts: ["browser_action"],
-    enabled: false,
+browser.runtime.onInstalled.addListener(() => {
+    browser.contextMenus.create({
+        id: TOOLBAR_CONTEXT_MENU_ID,
+        title: browser.i18n.getMessage("contextMenuToolbarLabel"),
+        contexts: ["action"],
+        enabled: false,
+    });
+
+    browser.contextMenus.create({
+        id: LINK_CONTEXT_MENU_ID,
+        title: browser.i18n.getMessage("contextMenuLinkLabel"),
+        contexts: ["link"],
+        enabled: true,
+    });
 });
 
-browser.contextMenus?.onClicked.addListener(
-    (info, _tab) => {
+browser.runtime.onStartup.addListener(() => {
+    browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: false});
+});
+
+browser.contextMenus.onClicked.addListener(
+    async (info, _tab) => {
         if (info.menuItemId === TOOLBAR_CONTEXT_MENU_ID) {
-            copyToClipboard(lastSourceURL);
+            const result = await browser.storage.session.get(VARIABLE_LAST_SOURCE_URL);
+            const lastSourceUrl = result[VARIABLE_LAST_SOURCE_URL];
+            if (lastSourceUrl === undefined) {
+                await browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: false});
+                return;
+            }
+            await navigator.clipboard.writeText(lastSourceUrl);
         }
-    }
-);
-
-browser.contextMenus?.create({
-    id: LINK_CONTEXT_MENU_ID,
-    title: browser.i18n.getMessage("contextMenuLinkLabel"),
-    contexts: ["link"],
-    enabled: true,
-});
-
-browser.contextMenus?.onClicked.addListener(
-    (info, _tab) => {
         if (info.menuItemId === LINK_CONTEXT_MENU_ID) {
+            await initializationPromise;
             const redirectTarget = url.getRedirectTarget(info.linkUrl, noSkipUrlsList, noSkipParametersList);
-            copyToClipboard(redirectTarget);
+            await navigator.clipboard.writeText(redirectTarget);
         }
     }
 );
 
-function copyToClipboard(text) {
-    chainPromises([
-        ()        => { return browser.tabs.executeScript({code: "typeof copyToClipboard === 'function';"}); },
-        (results) => { return injectScriptIfNecessary(results && results[0]); },
-        ()        => { return browser.tabs.executeScript({code: `copyToClipboard("${text}")`}); },
-    ]);
-}
-
-function injectScriptIfNecessary(isCopyFunctionDefined) {
-    if (!isCopyFunctionDefined) {
-        return browser.tabs.executeScript({file: "clipboard-helper.js"});
+browser.alarms.onAlarm.addListener(
+    (alarm) => {
+        if (alarm.name === NOTIFICATION_ALARM_NAME) {
+            clearNotifications();
+        }
     }
-}
+);
 
 function updateNoSkipParametersList(newNoSkipParametersList) {
     noSkipParametersList = newNoSkipParametersList.filter(Boolean);
@@ -277,6 +286,9 @@ function updateNoSkipUrlsList(newNoSkipUrlsList) {
 
 function updateSkipUrlsList(newSkipUrlsList) {
     skipUrlsList = newSkipUrlsList.filter(Boolean);
+    skipUrlsExpression = skipUrlsList.length > 0
+        ? new RegExp(`(${skipUrlsList.join("|")})`, "i")
+        : undefined;
 }
 
 function initSyncLists() {
@@ -320,41 +332,40 @@ function maybeSyncList(changedArea, optionName, optionValue) {
     );
 }
 
-function enableSkipping() {
-    browser.webRequest.onBeforeRequest.removeListener(maybeRedirect);
-
-    if (currentMode === OPTION_MODE_NO_SKIP_URLS_LIST) {
-        browser.webRequest.onBeforeRequest.addListener(
-            maybeRedirect,
-            {urls: ["<all_urls>"], types: ["main_frame"]},
-            ["blocking"]
-        );
-        browser.browserAction.setIcon({path: ICON_NO_SKIP_URLS_LIST});
-    } else if (currentMode === OPTION_MODE_SKIP_URLS_LIST) {
-        if (skipUrlsList.length > 0) {
-            browser.webRequest.onBeforeRequest.addListener(
-                maybeRedirect,
-                {urls: skipUrlsList, types: ["main_frame"]},
-                ["blocking"]
-            );
-        }
-
-        browser.browserAction.setIcon({path: ICON_SKIP_URLS_LIST});
+function updateBrowserAction() {
+    if (currentMode === OPTION_MODE_OFF) {
+        browser.action.setIcon({path: ICON_OFF});
+        browser.action.setTitle({title: browser.i18n.getMessage("browserActionLabelOff")});
+        return;
     }
 
-    browser.browserAction.setBadgeBackgroundColor({color: "red"});
-    browser.browserAction.setTitle({title: browser.i18n.getMessage("browserActionLabelOn")});
+    browser.action.setTitle({title: browser.i18n.getMessage("browserActionLabelOn")});
+    if (currentMode === OPTION_MODE_NO_SKIP_URLS_LIST) {
+        browser.action.setIcon({path: ICON_NO_SKIP_URLS_LIST});
+        return;
+    }
+    if (currentMode === OPTION_MODE_SKIP_URLS_LIST) {
+        browser.action.setIcon({path: ICON_SKIP_URLS_LIST});
+        return;
+    }
 }
 
-function disableSkipping() {
-    browser.webRequest.onBeforeRequest.removeListener(maybeRedirect);
 
-    browser.browserAction.setIcon({path: ICON_OFF});
-    browser.browserAction.setTitle({title: browser.i18n.getMessage("browserActionLabelOff")});
-}
+async function maybeRedirect(requestDetails) {
+    await initializationPromise;
 
-function maybeRedirect(requestDetails) {
     if (requestDetails.tabId === -1 || requestDetails.method !== "GET") {
+        return;
+    }
+
+    if (currentMode === OPTION_MODE_OFF) {
+        return;
+    }
+
+    if (
+        currentMode === OPTION_MODE_SKIP_URLS_LIST
+        && !skipUrlsExpression?.test(requestDetails.url)
+    ) {
         return;
     }
 
@@ -370,8 +381,8 @@ function maybeRedirect(requestDetails) {
     }
 
     if (currentMode === OPTION_MODE_NO_SKIP_URLS_LIST && !skipRedirectsToSameDomain) {
-        const sourceHostname = getHostname(requestDetails.url);
-        const targetHostname = getHostname(redirectTarget);
+        const sourceHostname = new URL(requestDetails.url).hostname;
+        const targetHostname = new URL(redirectTarget).hostname;
         const sourceDomain = psl.getDomain(sourceHostname);
         const targetDomain = psl.getDomain(targetHostname);
         if (sourceDomain === targetDomain) {
@@ -388,17 +399,11 @@ function maybeRedirect(requestDetails) {
 }
 
 function prepareToolbarContextMenu(from) {
-    if (lastSourceURL === undefined) {
-        browser.contextMenus?.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: true});
-    }
-    lastSourceURL = from;
+    browser.storage.session.set({[VARIABLE_LAST_SOURCE_URL]: from});
+    browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: true});
 }
 
 function notifySkip(from, to) {
-    if (notificationTimeout) {
-        clearNotifications();
-    }
-
     const notificationMessage = browser.i18n.getMessage("redirectSkippedNotificationMessage", [cleanUrl(from), cleanUrl(to)]);
 
     const toolbarButtonTitle = browser.i18n.getMessage("browserActionLabelOnSkipped", [from, to]);
@@ -411,18 +416,19 @@ function notifySkip(from, to) {
             message: notificationMessage,
         });
     }
-    browser.browserAction.setBadgeText({text: browser.i18n.getMessage("redirectSkippedBrowserActionBadge")});
+    browser.action.setBadgeText({text: browser.i18n.getMessage("redirectSkippedBrowserActionBadge")});
 
-    browser.browserAction.setTitle({title: toolbarButtonTitle});
+    browser.action.setTitle({title: toolbarButtonTitle});
 
-    notificationTimeout = setTimeout(clearNotifications, 1000 * notificationDuration);
+    browser.alarms.create(
+        NOTIFICATION_ALARM_NAME,
+        {when: Date.now() + 1000 * notificationDuration}
+    );
 }
 
 function clearNotifications() {
-    clearTimeout(notificationTimeout);
-    notificationTimeout = undefined;
     browser.notifications.clear(NOTIFICATION_ID);
-    browser.browserAction.setBadgeText({text: ""});
+    browser.action.setBadgeText({text: ""});
 }
 
 function cleanUrl(string) {
@@ -431,19 +437,4 @@ function cleanUrl(string) {
     }
 
     return string.replace(/&/g, "&amp;");
-}
-
-function getHostname(url) {
-    const a = document.createElement("a");
-    a.href = url;
-    return a.hostname;
-}
-
-function chainPromises(functions) {
-    let promise = Promise.resolve();
-    for (const function_ of functions) {
-        promise = promise.then(function_);
-    }
-
-    return promise.catch((error) => { console.warn(error.message); });
 }

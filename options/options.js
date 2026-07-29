@@ -25,6 +25,7 @@ const ELEMENT_SYNC_LISTS_ENABLED = "sync-lists-enabled";
 
 const ELEMENT_NO_SKIP_PARAMETERS_LIST_ERROR = "no-skip-parameters-list-error";
 const ELEMENT_NO_SKIP_URLS_LIST_ERROR = "no-skip-urls-list-error";
+const ELEMENT_SKIP_URLS_LIST_ERROR = "skip-urls-list-error";
 
 const ELEMENT_NOTIFICATION_DURATION = "notification-duration";
 const ELEMENT_NOTIFICATION_POPUP_ENABLED = "notification-popup-enabled";
@@ -54,12 +55,15 @@ function restoreOptions() {
             maybeHighlightError(noSkipParametersList, ELEMENT_NO_SKIP_PARAMETERS_LIST, ELEMENT_NO_SKIP_PARAMETERS_LIST_ERROR);
             setTextValue(ELEMENT_NO_SKIP_PARAMETERS_LIST, noSkipParametersList.join("\n"));
 
+            const skipUrlsList = result[OPTION_SKIP_URLS_LIST];
+            maybeHighlightError(skipUrlsList, ELEMENT_SKIP_URLS_LIST, ELEMENT_SKIP_URLS_LIST_ERROR);
+            setTextValue(ELEMENT_SKIP_URLS_LIST, skipUrlsList.join("\n"));
+
             setBooleanValue(ELEMENT_NOTIFICATION_POPUP_ENABLED, result[OPTION_NOTIFICATION_POPUP_ENABLED]);
             setBooleanValue(ELEMENT_SKIP_REDIRECTS_TO_SAME_DOMAIN, result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]);
             setBooleanValue(ELEMENT_SYNC_LISTS_ENABLED, result[OPTION_SYNC_LISTS_ENABLED]);
 
             setTextValue(ELEMENT_NOTIFICATION_DURATION, result[OPTION_NOTIFICATION_DURATION]);
-            setTextValue(ELEMENT_SKIP_URLS_LIST, result[OPTION_SKIP_URLS_LIST].join("\n"));
 
             switch (result[OPTION_MODE]) {
                 case OPTION_MODE_OFF:
@@ -87,12 +91,7 @@ function enableAutosave() {
 
 function loadTranslations() {
     for (const element of document.querySelectorAll("[data-i18n]")) {
-        const translationKey = element.getAttribute("data-i18n");
-        if (typeof browser === "undefined" || !browser.i18n.getMessage(translationKey)) {
-            element.textContent = element.getAttribute("data-i18n");
-        } else {
-            element.innerHTML = browser.i18n.getMessage(translationKey);
-        }
+        element.textContent = browser.i18n.getMessage(element.dataset.i18n);
     }
 }
 
@@ -108,8 +107,8 @@ function setBooleanValue(elementID, newValue) {
     document.getElementById(elementID).checked = newValue;
 }
 
-function getRegExpError(noSkipUrlsList) {
-    for(const line of noSkipUrlsList) {
+function getRegExpError(list) {
+    for (const line of list) {
         try {
             new RegExp(line);
         } catch(exception) {
@@ -155,11 +154,14 @@ function saveOptions(event) {
     const noSkipParametersList = document.querySelector(`#${ELEMENT_NO_SKIP_PARAMETERS_LIST}`).value.split("\n");
     maybeHighlightError(noSkipParametersList, ELEMENT_NO_SKIP_PARAMETERS_LIST, ELEMENT_NO_SKIP_PARAMETERS_LIST_ERROR);
 
+    const skipUrlsList = document.querySelector(`#${ELEMENT_SKIP_URLS_LIST}`).value.split("\n");
+    maybeHighlightError(skipUrlsList, ELEMENT_SKIP_URLS_LIST, ELEMENT_SKIP_URLS_LIST_ERROR);
+
     browser.storage.local.set({
 
         [OPTION_NO_SKIP_URLS_LIST]: noSkipUrlsList,
         [OPTION_NO_SKIP_PARAMETERS_LIST]: noSkipParametersList,
-        [OPTION_SKIP_URLS_LIST]: document.querySelector(`#${ELEMENT_SKIP_URLS_LIST}`).value.split("\n"),
+        [OPTION_SKIP_URLS_LIST]: skipUrlsList,
 
         [OPTION_MODE]:
             document.querySelector(`#${ELEMENT_MODE_OFF}`).checked && OPTION_MODE_OFF

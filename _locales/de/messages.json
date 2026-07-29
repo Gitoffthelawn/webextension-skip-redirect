@@ -87,7 +87,7 @@
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",
-        "message": "Skip-Urls-Liste (jeder Eintrag muss diesem <a href=\"https://developer.mozilla.org/Add-ons/WebExtensions/Match_patterns\">Schema</a> folgen)"
+        "message": "Skip-Urls-Liste (reguläre Ausdrücke sind zugelassen)"
     },
     "optionsSyncExplanation": {
         "description": "Details about how Sync works.",
