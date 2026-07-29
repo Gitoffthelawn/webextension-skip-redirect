@@ -1,7 +1,7 @@
-const test = require("tape");
+import test from "tape";
 
-const base64 = require("./base64");
-const url = require("./url");
+import * as base64 from "../base64.js";
+import * as url from "../url.js";
 
 const queryAndFragment = "?some=parameter&some-other=parameter;another=parameter#some-fragment";
 

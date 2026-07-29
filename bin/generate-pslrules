@@ -15,31 +15,17 @@ if [ ! -f $PSL_FILE_PATH ]; then
 fi
 
 CONTENT=$(cat << END
-const pslrules = (function(root) { //  eslint-disable-line no-unused-vars
+export const EXCEPTION_ENTRIES = new Set([
+$(cat $PSL_FILE_PATH | grep '^!'  | sed -e 's/^!//'                                | awk '{print $1}' | sed -e 's/\(.*\)/    "\1",/')
+]);
 
-    const EXCEPTION_ENTRIES = new Set([
-$(cat $PSL_FILE_PATH | grep '^!'  | sed -e 's/^!//'                                | awk '{print $1}' | sed -e 's/\(.*\)/        "\1",/')
-    ]);
+export const WILDCARD_ENTRIES = new Set([
+$(cat $PSL_FILE_PATH | grep '^*.' | sed -e 's/^\*\.//'                             | awk '{print $1}' | sed -e 's/\(.*\)/    "\1",/')
+]);
 
-    const WILDCARD_ENTRIES = new Set([
-$(cat $PSL_FILE_PATH | grep '^*.' | sed -e 's/^\*\.//'                             | awk '{print $1}' | sed -e 's/\(.*\)/        "\1",/')
-    ]);
-
-    const NORMAL_ENTRIES = new Set([
-$(cat $PSL_FILE_PATH | grep -v '^//' | grep -v '^$' | grep -v '^!' | grep -v '^*.' | awk '{print $1}' | sed -e 's/\(.*\)/        "\1",/')
-    ]);
-
-    root.EXCEPTION_ENTRIES = EXCEPTION_ENTRIES;
-    root.WILDCARD_ENTRIES = WILDCARD_ENTRIES;
-    root.NORMAL_ENTRIES = NORMAL_ENTRIES;
-
-    return {
-        EXCEPTION_ENTRIES: EXCEPTION_ENTRIES,
-        WILDCARD_ENTRIES: WILDCARD_ENTRIES,
-        NORMAL_ENTRIES: NORMAL_ENTRIES,
-    };
-
-})(this);
+export const NORMAL_ENTRIES = new Set([
+$(cat $PSL_FILE_PATH | grep -v '^//' | grep -v '^$' | grep -v '^!' | grep -v '^*.' | awk '{print $1}' | sed -e 's/\(.*\)/    "\1",/')
+]);
 END
 )
 

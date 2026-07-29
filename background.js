@@ -1,6 +1,6 @@
-/* global psl */
-/* global url */
-/* global util */
+import * as psl from "./psl.js";
+import * as url from "./url.js";
+import * as util from "./util.js";
 
 const OPTION_MODE = "mode";
 

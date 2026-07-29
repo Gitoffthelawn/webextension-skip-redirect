@@ -1,6 +1,6 @@
-const test = require("tape");
+import test from "tape";
 
-const psl = require("./psl");
+import * as psl from "../psl.js";
 
 test("Malformed hostname", function(assert) {
     assert.equal(psl.getDomain("....."), undefined);
