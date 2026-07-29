@@ -5,11 +5,6 @@
 - [ ] If you have a problem with a specific website: adding the domain to your no-skip-urls-list does not solve the problem
 - [ ] The issue is not about adding entries to the default no-skip-urls-list
 
-### What is your browser?
-
-- [ ] Firefox
-- [ ] Chrome
-
 ### What is your operating system?
 
 - [ ] Linux
@@ -17,5 +12,4 @@
 - [ ] Windows
 
 ### Description (please include examples/screenshots where applicable)
-
 

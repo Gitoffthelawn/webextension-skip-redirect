@@ -406,7 +406,7 @@ function notifySkip(from, to) {
     if (notificationPopupEnabled) {
         browser.notifications.create(NOTIFICATION_ID, {
             type: "basic",
-            iconUrl: browser.extension.getURL(ICON),
+            iconUrl: browser.runtime.getURL(ICON),
             title: browser.i18n.getMessage("redirectSkippedNotificationTitle"),
             message: notificationMessage,
         });

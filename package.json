@@ -15,7 +15,6 @@
         "url": "https://github.com/sblask-webextensions/webextension-skip-redirect"
     },
     "scripts": {
-        "chrome": "./bin/prepare-chrome.sh 0.0.0 && web-ext run --source-dir dist-chrome --target chromium",
         "firefox": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --devtools",
         "german": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --pref=general.useragent.locale=de-DE --pref=intl.locale.matchOS=false",
         "test": "tape test/*.js"

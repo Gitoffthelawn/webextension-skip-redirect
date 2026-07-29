@@ -15,7 +15,7 @@ VERSION=$1
 
 cp "${ROOT_DIRECTORY}"/LICENSE "${DIST_DIRECTORY}"
 
-jq --indent 4 ". | .version |= \"$VERSION\" | del(.background.service_worker) | del(.minimum_chrome_version) | .icons |= {\"48\": \"icon.svg\"}" "${ROOT_DIRECTORY}"/manifest.json > "${DIST_DIRECTORY}"/manifest.json
+jq --indent 4 ".version = \"$VERSION\"" "${ROOT_DIRECTORY}"/manifest.json > "${DIST_DIRECTORY}"/manifest.json
 
 # copy files
 cp "${ROOT_DIRECTORY}"/icons/*.svg "${DIST_DIRECTORY}"
@@ -31,9 +31,6 @@ if [ -d "${ROOT_DIRECTORY}"/options ]; then
 fi
 cp "${ROOT_DIRECTORY}"/*.js "${DIST_DIRECTORY}"/
 rm "${DIST_DIRECTORY}"/eslint.config.js
-
-# shellcheck disable=2046
-sed --in-place --regexp-extended 's|// firefox-only: ||' $(find "${DIST_DIRECTORY}" -name '*.js' -o -name '*.html')
 
 # create zip
 name="$(jq -r '.name' manifest.json |
