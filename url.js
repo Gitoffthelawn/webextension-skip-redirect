@@ -17,17 +17,17 @@ function comprehend(array, transformFunction) {
     return result;
 }
 
-const possibleColonPrefixes = comprehend(PROTOCOLS, protocol => protocol + "(?::)").concat("www\\.");
+const possibleColonPrefixes = comprehend(PROTOCOLS, (protocol) => protocol + "(?::)").concat("www\\.");
 const possibleColonPrefixesString = "(?:" + possibleColonPrefixes.join("|") + ")";
 
-const possibleEncodedColonPrefixes = comprehend(PROTOCOLS, protocol => protocol + "(?:%3A|%253A)").concat("www\\.");
+const possibleEncodedColonPrefixes = comprehend(PROTOCOLS, (protocol) => protocol + "(?:%3A|%253A)").concat("www\\.");
 const possibleEncodedColonPrefixesString = "(?:" + possibleEncodedColonPrefixes.join("|") + ")";
 
-const possiblePlainPrefixes = comprehend(PROTOCOLS, protocol => protocol + "(?::|%3A|%253A)").concat("www\\.");
+const possiblePlainPrefixes = comprehend(PROTOCOLS, (protocol) => protocol + "(?::|%3A|%253A)").concat("www\\.");
 const possiblePlainPrefixesString = "(?:" + possiblePlainPrefixes.join("|") + ")";
 
-const possibleBase64Prefixes =        comprehend(PROTOCOLS, protocol =>  base64.encode(protocol + "://").slice(0, -4)).concat(base64.encode("www"));
-const possibleBase64PrefixesDecoded = comprehend(PROTOCOLS, protocol =>                protocol + "://")              .concat("www\\.");
+const possibleBase64Prefixes =        comprehend(PROTOCOLS, (protocol) =>  base64.encode(protocol + "://").slice(0, -4)).concat(base64.encode("www"));
+const possibleBase64PrefixesDecoded = comprehend(PROTOCOLS, (protocol) =>                protocol + "://").concat("www\\.");
 const possibleBase64PrefixesString = "(?:" + possibleBase64Prefixes.join("|") + ")";
 
 const base64JunkPrefix = "(?:[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]+\\.)?";
@@ -60,7 +60,7 @@ function getQueryRegexpPlainProtocol(parameterExceptions) {
     // (partially) working on older browsers
     try {
         return new RegExp("https?://.*" + `(?<!${parameterExceptions.join("|")})=` + "(" + possiblePlainPrefixesString  + "(?:[^?&;#]+[?][^?]+|[^?&;#]+)" + ")", "i");
-    } catch(_exception) {
+    } catch (_exception) {
         return simple;
     }
 }
@@ -75,7 +75,7 @@ function getQueryRegexpBase64Protocol(parameterExceptions) {
     // (partially) working on older browsers
     try {
         return new RegExp("https?://.*" + `(?<!${parameterExceptions.join("|")})=` + "(" + possibleBase64PrefixesString + validBase64                     + ")", "i");
-    } catch(_exception) {
+    } catch (_exception) {
         return simple;
     }
 }
@@ -97,21 +97,21 @@ function maybeDecode(urlMatch) {
 }
 
 function getPlainMatches(url, parameterExceptions) {
-    const matches =
-        url.match(pathRegexpPlainProtocol, "i") ||
-        url.match(pathRegexpEncodedProtocol, "i") ||
-        url.match(getQueryRegexpPlainProtocol(parameterExceptions), "i") ||
-        undefined;
+    const matches
+        = url.match(pathRegexpPlainProtocol, "i")
+            || url.match(pathRegexpEncodedProtocol, "i")
+            || url.match(getQueryRegexpPlainProtocol(parameterExceptions), "i")
+            || undefined;
     if (matches) {
         return matches[1];
     }
 }
 
 function getBase64Matches(url, parameterExceptions) {
-    const matches =
-        url.match(pathRegexpBase64Protocol, "i") ||
-        url.match(getQueryRegexpBase64Protocol(parameterExceptions), "i") ||
-        undefined;
+    const matches
+        = url.match(pathRegexpBase64Protocol, "i")
+            || url.match(getQueryRegexpBase64Protocol(parameterExceptions), "i")
+            || undefined;
     if (matches) {
         const decodedMatch = base64.decode(matches[1]).split("\n")[0];
         if (base64CheckRegexp.test(decodedMatch, "i")) {

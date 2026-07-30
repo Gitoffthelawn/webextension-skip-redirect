@@ -167,7 +167,6 @@ async function initializeState() {
     } else {
         syncLists = result[OPTION_SYNC_LISTS_ENABLED];
     }
-
 }
 
 browser.storage.onChanged.addListener(
@@ -190,21 +189,21 @@ browser.storage.onChanged.addListener(
 
         if (changes[OPTION_NO_SKIP_PARAMETERS_LIST]) {
             updateNoSkipParametersList(changes[OPTION_NO_SKIP_PARAMETERS_LIST].newValue);
-            if (!initTriggered){
+            if (!initTriggered) {
                 maybeSyncList(areaName, OPTION_NO_SKIP_PARAMETERS_LIST, noSkipParametersList);
             }
         }
 
         if (changes[OPTION_NO_SKIP_URLS_LIST]) {
             updateNoSkipUrlsList(changes[OPTION_NO_SKIP_URLS_LIST].newValue);
-            if (!initTriggered){
+            if (!initTriggered) {
                 maybeSyncList(areaName, OPTION_NO_SKIP_URLS_LIST, noSkipUrlsList);
             }
         }
 
         if (changes[OPTION_SKIP_URLS_LIST]) {
             updateSkipUrlsList(changes[OPTION_SKIP_URLS_LIST].newValue);
-            if (!initTriggered){
+            if (!initTriggered) {
                 maybeSyncList(areaName, OPTION_SKIP_URLS_LIST, skipUrlsList);
             }
         }
@@ -225,7 +224,6 @@ browser.storage.onChanged.addListener(
         if (changes[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]) {
             skipRedirectsToSameDomain = changes[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN].newValue;
         }
-
     }
 );
 
@@ -325,7 +323,7 @@ function maybeSyncList(changedArea, optionName, optionValue) {
     toArea.get([optionName]).then(
         (result) => {
             const targetValue = result[optionName];
-            if (JSON.stringify(targetValue) !== JSON.stringify(optionValue)){
+            if (JSON.stringify(targetValue) !== JSON.stringify(optionValue)) {
                 toArea.set({[optionName]: optionValue});
             }
         }
@@ -349,7 +347,6 @@ function updateBrowserAction() {
         return;
     }
 }
-
 
 async function maybeRedirect(requestDetails) {
     await initializationPromise;

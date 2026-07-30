@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/no-multi-spaces */
 import test from "tape";
 
 import * as base64 from "../base64.js";
@@ -221,7 +222,7 @@ test("base64 encoded URLs - in path with junk in front of it", function(assert) 
 
 test("base64 encoded URLs - in query string value", function(assert) {
     const urlExceptions = [];
-    const parameterExceptions = []    ;
+    const parameterExceptions = [];
     assert.equal(url.getRedirectTarget("http://" + "www.some.website.com" + "/" + "?target=" +      base64.encode(wwwTargetUrl), urlExceptions, parameterExceptions),                                     "http://" +  wwwTargetUrl);
     assert.equal(url.getRedirectTarget("http://" + "www.some.website.com" + "/" + "?target=" +      base64.encode(wwwTargetUrl + "\n" + someTargetUrl), urlExceptions, parameterExceptions),              "http://" +  wwwTargetUrl);
     assert.equal(url.getRedirectTarget("http://" + "www.some.website.com" + "/" + "?target=" +      base64.encode("http://" + someTargetUrl), urlExceptions, parameterExceptions),                        "http://" + someTargetUrl);

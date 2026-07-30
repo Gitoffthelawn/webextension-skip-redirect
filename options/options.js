@@ -31,9 +31,7 @@ const ELEMENT_NOTIFICATION_DURATION = "notification-duration";
 const ELEMENT_NOTIFICATION_POPUP_ENABLED = "notification-popup-enabled";
 const ELEMENT_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
 
-
 let timeout;
-
 
 function restoreOptions() {
     browser.storage.local.get([
@@ -46,7 +44,7 @@ function restoreOptions() {
         OPTION_SKIP_URLS_LIST,
         OPTION_SYNC_LISTS_ENABLED,
     ]).then(
-        result => {
+        (result) => {
             const noSkipUrlsList = result[OPTION_NO_SKIP_URLS_LIST];
             maybeHighlightError(noSkipUrlsList, ELEMENT_NO_SKIP_URLS_LIST, ELEMENT_NO_SKIP_URLS_LIST_ERROR);
             setTextValue(ELEMENT_NO_SKIP_URLS_LIST, noSkipUrlsList.join("\n"));
@@ -111,7 +109,7 @@ function getRegExpError(list) {
     for (const line of list) {
         try {
             new RegExp(line);
-        } catch(exception) {
+        } catch (exception) {
             return {
                 line,
                 message: exception.message,
@@ -165,10 +163,8 @@ function saveOptions(event) {
 
         [OPTION_MODE]:
             document.querySelector(`#${ELEMENT_MODE_OFF}`).checked && OPTION_MODE_OFF
-            ||
-            document.querySelector(`#${ELEMENT_MODE_NO_SKIP_URLS_LIST}`).checked && OPTION_MODE_NO_SKIP_URLS_LIST
-            ||
-            document.querySelector(`#${ELEMENT_MODE_SKIP_URLS_LIST}`).checked && OPTION_MODE_SKIP_URLS_LIST,
+            || document.querySelector(`#${ELEMENT_MODE_NO_SKIP_URLS_LIST}`).checked && OPTION_MODE_NO_SKIP_URLS_LIST
+            || document.querySelector(`#${ELEMENT_MODE_SKIP_URLS_LIST}`).checked && OPTION_MODE_SKIP_URLS_LIST,
 
         [OPTION_NOTIFICATION_DURATION]: document.querySelector(`#${ELEMENT_NOTIFICATION_DURATION}`).value,
         [OPTION_NOTIFICATION_POPUP_ENABLED]: document.querySelector(`#${ELEMENT_NOTIFICATION_POPUP_ENABLED}`).checked,

@@ -7,6 +7,6 @@ export function mergeList(target, source) {
     }
     return [
         ...target,
-        ...source.filter((element) => ! target.includes(element)),
+        ...source.filter((element) => !target.includes(element)),
     ];
 }
