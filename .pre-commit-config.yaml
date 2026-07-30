@@ -10,6 +10,12 @@ repos:
         types_or:
           - javascript
 
+      - id: web-ext lint
+        name: web-ext lint
+        entry: bash -c "./bin/prepare-firefox.sh 0.0.0 && npx web-ext lint --source-dir dist-firefox/"
+        language: system
+        pass_filenames: false
+
       - id: translation-check
         name: translation-check
         entry: ./bin/translation-check
@@ -25,14 +31,6 @@ repos:
           - javascript
         additional_dependencies:
           - tape@5.10.2
-
-      - id: web-ext lint
-        name: web-ext lint
-        entry: bash -c "./bin/prepare-firefox.sh 0.0.0 && npx web-ext lint --source-dir dist-firefox/"
-        language: system
-        types_or:
-          - javascript
-        pass_filenames: false
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
