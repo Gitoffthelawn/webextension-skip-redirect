@@ -1,6 +1,6 @@
 import * as pslrules from "./pslrules.js";
 
-export function getDomain(hostname, previousHead=undefined) {
+export function getDomain(hostname, previousHead = undefined) {
     if (!hostname) {
         return undefined;
     }
