@@ -82,8 +82,8 @@
         "message": "Synchronisation"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
-        "message": "Supprimer les redirections des adresses de même domaine public"
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
+        "message": "Supprimer les redirections des adresses de même domaine enregistrable"
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",

@@ -82,8 +82,8 @@
         "message": "Sync"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
-        "message": "Skip redirects for URLs with the same public domain"
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
+        "message": "Skip redirects for URLs with the same registrable domain"
     },
     "optionsSkipUrlsListContent": {
         "description": "Label of the text area to edit the skip-urls-list.",

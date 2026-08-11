@@ -82,7 +82,7 @@
         "message": "Eşzamanla"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
         "message": "Aynı genel etki alanı adına sahip URL'ler için yönlendirmeleri atla"
     },
     "optionsSkipUrlsListContent": {

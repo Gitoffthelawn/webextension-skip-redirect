@@ -82,7 +82,7 @@
         "message": "Синхронизация"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
         "message": "Пропускать перенаправления в том же домене"
     },
     "optionsSkipUrlsListContent": {

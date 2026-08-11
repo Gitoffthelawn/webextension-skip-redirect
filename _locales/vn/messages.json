@@ -82,7 +82,7 @@
         "message": "Sync"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
         "message": "Bỏ qua các chuyển hướng cho các URL có cùng miền công cộng"
     },
     "optionsSkipUrlsListContent": {

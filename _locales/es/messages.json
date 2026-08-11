@@ -82,7 +82,7 @@
         "message": "Sincronizar"
     },
     "optionsSkipRedirectsToSameDomain": {
-        "description": "Label of the checkbox that toggles skipping to the same public domain.",
+        "description": "Label of the checkbox that toggles skipping to the same registrable domain.",
         "message": "Omitir redirecciones de URL con el mismo dominio público"
     },
     "optionsSkipUrlsListContent": {
