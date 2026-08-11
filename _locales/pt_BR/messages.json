@@ -41,6 +41,10 @@
         "description": "Name of the extension in the add-on manager.",
         "message": "Pular redirecionamento"
     },
+    "optionsContextMenuEnable": {
+        "description": "Label of the checkbox to toggle the context menu entries.",
+        "message": "Ativado"
+    },
     "optionsModeNoSkipUrlsList": {
         "description": "The choice that sets the extension into no-skip-urls-list mode.",
         "message": "Pular todos redirecionamentos, exceto de URLs que estão incluídas em lista de Não-Pular."
@@ -68,6 +72,10 @@
     "optionsNotificationsEnable": {
         "description": "Label of the checkbox to toggle notifications.",
         "message": "Ativar popup"
+    },
+    "optionsSectionContextMenu": {
+        "description": "Title of the options section allowing to toggle the context menu entries.",
+        "message": "Menu de contexto"
     },
     "optionsSectionMode": {
         "description": "Title of the options section allowing to toggle between no-skip-urls-list and skip-urls-list or disable the extension.",

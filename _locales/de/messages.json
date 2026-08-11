@@ -41,6 +41,10 @@
         "description": "Name of the extension in the add-on manager.",
         "message": "Skip Redirect"
     },
+    "optionsContextMenuEnable": {
+        "description": "Label of the checkbox to toggle the context menu entries.",
+        "message": "Aktiviert"
+    },
     "optionsModeNoSkipUrlsList": {
         "description": "The choice that sets the extension into no-skip-urls-list mode.",
         "message": "Überspringe Weiterleitungen für alle Webadressen, es sei denn die Adresse entspricht einem Eintrag in der No-Skip-Urls-Liste."
@@ -68,6 +72,10 @@
     "optionsNotificationsEnable": {
         "description": "Label of the checkbox to toggle notifications.",
         "message": "Zeige Benachrichtigungsdialog"
+    },
+    "optionsSectionContextMenu": {
+        "description": "Title of the options section allowing to toggle the context menu entries.",
+        "message": "Kontextmenü"
     },
     "optionsSectionMode": {
         "description": "Title of the options section allowing to toggle between no-skip-urls-list and skip-urls-list mode or disable the extension.",

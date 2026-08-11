@@ -18,6 +18,8 @@ const OPTION_NOTIFICATION_DURATION = "notificationDuration";
 
 const OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
 
+const OPTION_CONTEXT_MENU_ENABLED = "contextMenuEnabled";
+
 const VARIABLE_LAST_SOURCE_URL = "lastSourceURL";
 
 const LIST_OPTIONS = [
@@ -91,6 +93,8 @@ let notificationDuration = undefined;
 let skipRedirectsToSameDomain = false;
 let syncLists = false;
 
+let contextMenuEnabled = true;
+
 const initializationPromise = initializeState()
     .catch((error) => {
         console.warn(`Could not initialize extension state: ${error.message}`);
@@ -107,6 +111,7 @@ browser.webRequest.onBeforeRequest.addListener(
 
 async function initializeState() {
     const result = await browser.storage.local.get([
+        OPTION_CONTEXT_MENU_ENABLED,
         OPTION_MODE,
         OPTION_NOTIFICATION_DURATION,
         OPTION_NOTIFICATION_POPUP_ENABLED,
@@ -116,6 +121,12 @@ async function initializeState() {
         OPTION_SKIP_URLS_LIST,
         OPTION_SYNC_LISTS_ENABLED,
     ]);
+
+    if (result[OPTION_CONTEXT_MENU_ENABLED] === undefined) {
+        browser.storage.local.set({[OPTION_CONTEXT_MENU_ENABLED]: true});
+    } else {
+        contextMenuEnabled = result[OPTION_CONTEXT_MENU_ENABLED];
+    }
 
     if (result[OPTION_NO_SKIP_PARAMETERS_LIST] === undefined) {
         browser.storage.local.set({[OPTION_NO_SKIP_PARAMETERS_LIST]: DEFAULT_NO_SKIP_PARAMETERS_LIST});
@@ -224,10 +235,26 @@ browser.storage.onChanged.addListener(
         if (changes[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]) {
             skipRedirectsToSameDomain = changes[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN].newValue;
         }
+
+        if (changes[OPTION_CONTEXT_MENU_ENABLED]) {
+            contextMenuEnabled = changes[OPTION_CONTEXT_MENU_ENABLED].newValue;
+            updateContextMenus();
+        }
     }
 );
 
-browser.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(async () => {
+    await initializationPromise;
+    await updateContextMenus();
+});
+
+async function updateContextMenus() {
+    await browser.contextMenus.removeAll();
+
+    if (!contextMenuEnabled) {
+        return;
+    }
+
     browser.contextMenus.create({
         id: TOOLBAR_CONTEXT_MENU_ID,
         title: browser.i18n.getMessage("contextMenuToolbarLabel"),
@@ -241,10 +268,13 @@ browser.runtime.onInstalled.addListener(() => {
         contexts: ["link"],
         enabled: true,
     });
-});
+}
 
-browser.runtime.onStartup.addListener(() => {
-    browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: false});
+browser.runtime.onStartup.addListener(async () => {
+    await initializationPromise;
+    if (contextMenuEnabled) {
+        browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: false});
+    }
 });
 
 browser.contextMenus.onClicked.addListener(
@@ -397,7 +427,9 @@ async function maybeRedirect(requestDetails) {
 
 function prepareToolbarContextMenu(from) {
     browser.storage.session.set({[VARIABLE_LAST_SOURCE_URL]: from});
-    browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: true});
+    if (contextMenuEnabled) {
+        browser.contextMenus.update(TOOLBAR_CONTEXT_MENU_ID, {enabled: true});
+    }
 }
 
 function notifySkip(from, to) {

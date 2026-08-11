@@ -14,6 +14,8 @@ const OPTION_NOTIFICATION_DURATION = "notificationDuration";
 
 const OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
 
+const OPTION_CONTEXT_MENU_ENABLED = "contextMenuEnabled";
+
 const ELEMENT_MODE_OFF = "mode-off";
 const ELEMENT_MODE_NO_SKIP_URLS_LIST = "mode-no-skip-urls-list";
 const ELEMENT_MODE_SKIP_URLS_LIST = "mode-skip-urls-list";
@@ -31,10 +33,13 @@ const ELEMENT_NOTIFICATION_DURATION = "notification-duration";
 const ELEMENT_NOTIFICATION_POPUP_ENABLED = "notification-popup-enabled";
 const ELEMENT_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
 
+const ELEMENT_CONTEXT_MENU_ENABLED = "context-menu-enabled";
+
 let timeout;
 
 function restoreOptions() {
     browser.storage.local.get([
+        OPTION_CONTEXT_MENU_ENABLED,
         OPTION_MODE,
         OPTION_NOTIFICATION_DURATION,
         OPTION_NOTIFICATION_POPUP_ENABLED,
@@ -60,6 +65,7 @@ function restoreOptions() {
             setBooleanValue(ELEMENT_NOTIFICATION_POPUP_ENABLED, result[OPTION_NOTIFICATION_POPUP_ENABLED]);
             setBooleanValue(ELEMENT_SKIP_REDIRECTS_TO_SAME_DOMAIN, result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]);
             setBooleanValue(ELEMENT_SYNC_LISTS_ENABLED, result[OPTION_SYNC_LISTS_ENABLED]);
+            setBooleanValue(ELEMENT_CONTEXT_MENU_ENABLED, result[OPTION_CONTEXT_MENU_ENABLED]);
 
             setTextValue(ELEMENT_NOTIFICATION_DURATION, result[OPTION_NOTIFICATION_DURATION]);
 
@@ -175,6 +181,7 @@ function saveOptions(event) {
         [OPTION_NOTIFICATION_POPUP_ENABLED]: document.querySelector(`#${ELEMENT_NOTIFICATION_POPUP_ENABLED}`).checked,
         [OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]: document.querySelector(`#${ELEMENT_SKIP_REDIRECTS_TO_SAME_DOMAIN}`).checked,
         [OPTION_SYNC_LISTS_ENABLED]: document.querySelector(`#${ELEMENT_SYNC_LISTS_ENABLED}`).checked,
+        [OPTION_CONTEXT_MENU_ENABLED]: document.querySelector(`#${ELEMENT_CONTEXT_MENU_ENABLED}`).checked,
 
     });
 }

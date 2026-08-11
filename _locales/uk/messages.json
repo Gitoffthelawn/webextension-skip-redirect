@@ -41,6 +41,10 @@
         "description": "Name of the extension in the add-on manager.",
         "message": "Skip Redirect"
     },
+    "optionsContextMenuEnable": {
+        "description": "Label of the checkbox to toggle the context menu entries.",
+        "message": "Увімкнено"
+    },
     "optionsModeNoSkipUrlsList": {
         "description": "The choice that sets the extension into no-skip-urls-list mode.",
         "message": "Пропускати всі перенаправлення, окрім URL-адрес, що відповідають будь-якому з рядків у чорному списку."
@@ -68,6 +72,10 @@
     "optionsNotificationsEnable": {
         "description": "Label of the checkbox to toggle notifications.",
         "message": "Увімкнути спливаюче повідомлення"
+    },
+    "optionsSectionContextMenu": {
+        "description": "Title of the options section allowing to toggle the context menu entries.",
+        "message": "Контекстне меню"
     },
     "optionsSectionMode": {
         "description": "Title of the options section allowing to toggle between no-skip-urls-list and skip-urls-list or disable the extension.",
