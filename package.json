@@ -4,7 +4,9 @@
         "@eslint/js": "10.0.1",
         "@stylistic/eslint-plugin": "5.10.0",
         "eslint": "10.8.0",
+        "geckodriver": "6.1.1",
         "globals": "17.9.0",
+        "selenium-webdriver": "4.47.0",
         "tape": "5.10.2",
         "web-ext": "10.6.0"
     },
@@ -17,7 +19,8 @@
     "scripts": {
         "firefox": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --devtools",
         "german": "./bin/prepare-firefox.sh 0.0.0 && web-ext run --source-dir dist-firefox --pref=general.useragent.locale=de-DE --pref=intl.locale.matchOS=false",
-        "test": "tape test/*.js"
+        "test": "tape test/*.js",
+        "test:e2e": "./bin/prepare-firefox.sh 0.0.0 && tape e2e/*.test.js"
     },
     "title": "Skip Redirect",
     "type": "module",

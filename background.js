@@ -1,24 +1,21 @@
+import {
+    DEFAULT_OPTIONS,
+    OPTION_CONTEXT_MENU_ENABLED,
+    OPTION_MODE,
+    OPTION_MODE_NO_SKIP_URLS_LIST,
+    OPTION_MODE_OFF,
+    OPTION_MODE_SKIP_URLS_LIST,
+    OPTION_NOTIFICATION_DURATION,
+    OPTION_NOTIFICATION_POPUP_ENABLED,
+    OPTION_NO_SKIP_PARAMETERS_LIST,
+    OPTION_NO_SKIP_URLS_LIST,
+    OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN,
+    OPTION_SKIP_URLS_LIST,
+    OPTION_SYNC_LISTS_ENABLED,
+} from "./option-defaults.js";
 import * as psl from "./psl.js";
 import * as url from "./url.js";
 import * as util from "./util.js";
-
-const OPTION_MODE = "mode";
-
-const OPTION_MODE_OFF = "off";
-const OPTION_MODE_NO_SKIP_URLS_LIST = "blacklist";
-const OPTION_MODE_SKIP_URLS_LIST = "whitelist";
-
-const OPTION_NO_SKIP_PARAMETERS_LIST = "no-skip-parameters-list";
-const OPTION_NO_SKIP_URLS_LIST = "blacklist";
-const OPTION_SKIP_URLS_LIST = "whitelist";
-const OPTION_SYNC_LISTS_ENABLED = "syncListsEnabled";
-
-const OPTION_NOTIFICATION_POPUP_ENABLED = "notificationPopupEnabled";
-const OPTION_NOTIFICATION_DURATION = "notificationDuration";
-
-const OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN = "skipRedirectsToSameDomain";
-
-const OPTION_CONTEXT_MENU_ENABLED = "contextMenuEnabled";
 
 const VARIABLE_LAST_SOURCE_URL = "lastSourceURL";
 
@@ -40,45 +37,6 @@ const ICON_NO_SKIP_URLS_LIST = "icon-no-skip-urls-list.svg";
 const ICON_SKIP_URLS_LIST = "icon-skip-urls-list.svg";
 
 const MAX_NOTIFICATION_URL_LENGTH = 100;
-
-const DEFAULT_NO_SKIP_PARAMETERS_LIST = [
-    "from",
-    "ref",
-    "ref_url",
-    "referer",
-    "referrer",
-    "source",
-];
-
-const DEFAULT_NO_SKIP_URLS_LIST = [
-    "/abp",
-    "/account",
-    "/adfs",
-    "/auth",
-    "/cookie",
-    "/download",
-    "/eid-client",
-    "/login",
-    "/logoff",
-    "/logon",
-    "/logout",
-    "/oauth",
-    "/openid",
-    "/pay",
-    "/preference",
-    "/profile",
-    "/register",
-    "/saml",
-    "/signin",
-    "/signoff",
-    "/signon",
-    "/signout",
-    "/signup",
-    "/sso",
-    "/subscribe",
-    "/unauthenticated",
-    "/verification",
-];
 
 let currentMode = undefined;
 
@@ -123,32 +81,32 @@ async function initializeState() {
     ]);
 
     if (result[OPTION_CONTEXT_MENU_ENABLED] === undefined) {
-        browser.storage.local.set({[OPTION_CONTEXT_MENU_ENABLED]: true});
+        browser.storage.local.set({[OPTION_CONTEXT_MENU_ENABLED]: DEFAULT_OPTIONS[OPTION_CONTEXT_MENU_ENABLED]});
     } else {
         contextMenuEnabled = result[OPTION_CONTEXT_MENU_ENABLED];
     }
 
     if (result[OPTION_NO_SKIP_PARAMETERS_LIST] === undefined) {
-        browser.storage.local.set({[OPTION_NO_SKIP_PARAMETERS_LIST]: DEFAULT_NO_SKIP_PARAMETERS_LIST});
+        browser.storage.local.set({[OPTION_NO_SKIP_PARAMETERS_LIST]: DEFAULT_OPTIONS[OPTION_NO_SKIP_PARAMETERS_LIST]});
     } else {
         updateNoSkipParametersList(result[OPTION_NO_SKIP_PARAMETERS_LIST]);
     }
 
     if (result[OPTION_NO_SKIP_URLS_LIST] === undefined) {
-        browser.storage.local.set({[OPTION_NO_SKIP_URLS_LIST]: DEFAULT_NO_SKIP_URLS_LIST});
+        browser.storage.local.set({[OPTION_NO_SKIP_URLS_LIST]: DEFAULT_OPTIONS[OPTION_NO_SKIP_URLS_LIST]});
     } else {
         updateNoSkipUrlsList(result[OPTION_NO_SKIP_URLS_LIST]);
     }
 
     if (result[OPTION_SKIP_URLS_LIST] === undefined) {
-        browser.storage.local.set({[OPTION_SKIP_URLS_LIST]: []});
+        browser.storage.local.set({[OPTION_SKIP_URLS_LIST]: DEFAULT_OPTIONS[OPTION_SKIP_URLS_LIST]});
     } else {
         updateSkipUrlsList(result[OPTION_SKIP_URLS_LIST]);
     }
 
     if (result[OPTION_MODE] === undefined) {
-        browser.storage.local.set({[OPTION_MODE]: OPTION_MODE_NO_SKIP_URLS_LIST});
-        currentMode = OPTION_MODE_NO_SKIP_URLS_LIST;
+        browser.storage.local.set({[OPTION_MODE]: DEFAULT_OPTIONS[OPTION_MODE]});
+        currentMode = DEFAULT_OPTIONS[OPTION_MODE];
     } else {
         currentMode = result[OPTION_MODE];
     }
@@ -156,25 +114,25 @@ async function initializeState() {
     updateBrowserAction();
 
     if (result[OPTION_NOTIFICATION_POPUP_ENABLED] === undefined) {
-        browser.storage.local.set({[OPTION_NOTIFICATION_POPUP_ENABLED]: true});
+        browser.storage.local.set({[OPTION_NOTIFICATION_POPUP_ENABLED]: DEFAULT_OPTIONS[OPTION_NOTIFICATION_POPUP_ENABLED]});
     } else {
         notificationPopupEnabled = result[OPTION_NOTIFICATION_POPUP_ENABLED];
     }
 
     if (result[OPTION_NOTIFICATION_DURATION] === undefined) {
-        browser.storage.local.set({[OPTION_NOTIFICATION_DURATION]: 3});
+        browser.storage.local.set({[OPTION_NOTIFICATION_DURATION]: DEFAULT_OPTIONS[OPTION_NOTIFICATION_DURATION]});
     } else {
         notificationDuration = result[OPTION_NOTIFICATION_DURATION];
     }
 
     if (result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN] === undefined) {
-        browser.storage.local.set({[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]: false});
+        browser.storage.local.set({[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]: DEFAULT_OPTIONS[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN]});
     } else {
         skipRedirectsToSameDomain = result[OPTION_SKIP_REDIRECTS_TO_SAME_DOMAIN];
     }
 
     if (result[OPTION_SYNC_LISTS_ENABLED] === undefined) {
-        browser.storage.local.set({[OPTION_SYNC_LISTS_ENABLED]: false});
+        browser.storage.local.set({[OPTION_SYNC_LISTS_ENABLED]: DEFAULT_OPTIONS[OPTION_SYNC_LISTS_ENABLED]});
     } else {
         syncLists = result[OPTION_SYNC_LISTS_ENABLED];
     }

@@ -10,6 +10,16 @@ export default [
     },
     stylistic.configs.recommended,
     {
+        files: [
+            "e2e/**/*.js",
+        ],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+    },
+    {
         languageOptions: {
             globals: {
                 ...globals.browser,
