@@ -3,7 +3,6 @@
 
 Skip Redirect
 =====================
-[![Mozilla Add-ons](https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png)](https://addons.mozilla.org/en-US/firefox/addon/skip-redirect/)
 
 Some web pages use intermediary pages before redirecting to a final page. This
 Firefox extension tries to extract the final url from the intermediary url and goes
