@@ -1,4 +1,5 @@
 [![pre-commit Status](https://github.com/sblask/webextension-skip-redirect/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sblask/webextension-skip-redirect/actions/workflows/pre-commit.yml)
+[![Mozilla Add-on Version](https://img.shields.io/amo/v/skip-redirect?color=ff7139)](https://addons.mozilla.org/en-US/firefox/addon/skip-redirect/)
 
 Skip Redirect
 =====================
